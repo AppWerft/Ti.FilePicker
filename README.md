@@ -1,6 +1,6 @@
 #Ti.FilePicker
 
-This module written by Jorge <img src="https://avatars.slack-edge.com/2016-07-26/63153065088_2171bf30e75d6d921ae9_192.jpg" width=80 /> and Rainer <img src="https://avatars.slack-edge.com/2016-09-11/78462010647_0c72b9186ef4032b7ed7_512.png" width=70>is an Titanium Android module for picking files from device.
+This module written by Jorge <img src="https://avatars.slack-edge.com/2016-07-26/63153065088_2171bf30e75d6d921ae9_192.jpg" width=80 /> and Rainer <img src="https://avatars.slack-edge.com/2016-09-11/78462010647_0c72b9186ef4032b7ed7_512.png" width=80>is an Titanium Android module for picking files from device.
 
 
 ##Interface
