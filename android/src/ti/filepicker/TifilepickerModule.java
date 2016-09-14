@@ -8,58 +8,37 @@
  */
 package ti.filepicker;
 
+import org.appcelerator.kroll.KrollDict;
+import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
-
-import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
+import org.appcelerator.titanium.TiApplication;
 
-
-@Kroll.module(name="Tifilepicker", id="ti.filepicker")
-public class TifilepickerModule extends KrollModule
-{
+@Kroll.module(name = "Tifilepicker", id = "ti.filepicker")
+public class TifilepickerModule extends KrollModule {
 
 	// Standard Debugging variables
-	private static final String LCAT = "TifilepickerModule";
-	private static final boolean DBG = TiConfig.LOGD;
+	private static final String LCAT = "TiFilePicker 📲 📲";
+	private String[] mimeTypes;
+	private KrollFunction successCallback;
 
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;
 
-	public TifilepickerModule()
-	{
+	public TifilepickerModule() {
 		super();
 	}
 
 	@Kroll.onAppCreate
-	public static void onAppCreate(TiApplication app)
-	{
-		Log.d(LCAT, "inside onAppCreate");
-		// put module init code that needs to run when the application is created
+	public static void onAppCreate(TiApplication app) {
 	}
 
-	// Methods
 	@Kroll.method
-	public String example()
-	{
-		Log.d(LCAT, "example called");
-		return "hello world";
+	public void getAllFiles(KrollDict opts) {
+		Object cb;
+		if (opts.containsKeyAndNotNull("mimeTypes")) {
+			mimeTypes = opts.getStringArray("mimeTypes");
+		}
 	}
-
-	// Properties
-	@Kroll.getProperty
-	public String getExampleProp()
-	{
-		Log.d(LCAT, "get example property");
-		return "hello world";
-	}
-
-
-	@Kroll.setProperty
-	public void setExampleProp(String value) {
-		Log.d(LCAT, "set example property: " + value);
-	}
-
 }
-
