@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.io.File;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
@@ -117,7 +118,11 @@ public class TifilepickerModule extends KrollModule {
 											mime.getExtensionFromMimeType(cR
 													.getType(uri)));
 									KrollDict dict = new KrollDict();
-									dict.put("result", tiBlob);
+									File file = StreamUtil
+											.stream2file(inStream);
+									dict.put("blob", tiBlob);
+									dict.put("file", file);
+
 									successCallback
 											.call(getKrollObject(), dict);
 								} catch (IOException e) {
