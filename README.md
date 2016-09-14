@@ -8,7 +8,7 @@ This module written by Jorge <img src="https://avatars.slack-edge.com/2016-07-26
 
 ```javascript
 var FilePicker = require("ti.filepicker");
-FilePicker.pick({
+FilePicker.getFileSelectDialog({
   mimeTypes: ["*/pdf","*/magicstuff"],
   onSuccess : function(_e) {
         var resultBlob = _e.result;

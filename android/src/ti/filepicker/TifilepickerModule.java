@@ -73,7 +73,7 @@ public class TifilepickerModule extends KrollModule {
 	}
 
 	@Kroll.method
-	public void showAllFiles(KrollDict opts) {
+	public void getFileSelectDialog(KrollDict opts) {
 		getAllFiles(opts);
 	}
 
