@@ -20,3 +20,4 @@ FilePicker.showAllFiles({
 
 ```
 
+<img src="http://i.imgur.com/rvY4vrr.png" width=300 />
