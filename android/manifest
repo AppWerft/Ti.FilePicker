@@ -1,0 +1,18 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 0.0.1
+apiversion: 2
+architectures: armeabi armeabi-v7a x86
+description: tifilepicker
+author: x
+license: Specify your license
+copyright: Copyright (c) 2016 by 
+
+# these should not be edited
+name: tifilepicker
+moduleid: ti.filepicker
+guid: 00e35cc2-015c-4d3d-b6cc-5ecb4c70b531
+platform: android
+minsdk: 5.2.0.GA
