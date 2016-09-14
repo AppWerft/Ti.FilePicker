@@ -14,7 +14,11 @@ import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiApplication;
+import org.appcelerator.titanium.util.TiActivityResultHandler;
+import org.appcelerator.titanium.util.TiActivitySupport;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 @Kroll.module(name = "Tifilepicker", id = "ti.filepicker")
@@ -22,6 +26,7 @@ public class TifilepickerModule extends KrollModule {
 
 	// Standard Debugging variables
 	private static final String LCAT = "TiFilePicker 📲 📲";
+	private static final int RC = 42;
 	private String[] mimeTypes = { "*/*" };
 	private KrollFunction successCallback;
 
@@ -68,6 +73,23 @@ public class TifilepickerModule extends KrollModule {
 		for (String mimeType : mimeTypes) {
 			intent.setType(mimeType);
 		}
+		Context ctx = TiApplication.getInstance().getApplicationContext();
+		TiActivitySupport activitySupport = (TiActivitySupport) TiApplication
+				.getInstance().getCurrentActivity();
+		activitySupport.launchActivityForResult(intent, RC,
+				new TiActivityResultHandler() {
+					public void onError(Activity arg0, int arg1, Exception arg2) {
+
+					}
+
+					public void onResult(Activity dummy, int requestCode,
+							int resultCode, Intent data) {
+						if (requestCode != RC)
+							return;
+					}
+				}
+
+		);
 
 	}
 }
