@@ -121,17 +121,16 @@ public class TifilepickerModule extends KrollModule {
 								try {
 									if (resultType == TYPE_BLOB) {
 										bytes = IOUtils.toByteArray(inStream);
-										TiBlob tiBlob = TiBlob.blobFromData(
-												bytes,
-												mime.getExtensionFromMimeType(cR
-														.getType(uri)));
-										dict.put("blob", tiBlob);
+										dict.put(
+												"blob",
+												TiBlob.blobFromData(
+														bytes,
+														mime.getExtensionFromMimeType(cR
+																.getType(uri))));
 									} else {
-										File file = StreamUtil
-												.stream2file(inStream);
-										dict.put("file", file);
+										dict.put("file", StreamUtil
+												.stream2file(inStream));
 									}
-
 									successCallback
 											.call(getKrollObject(), dict);
 								} catch (IOException e) {
