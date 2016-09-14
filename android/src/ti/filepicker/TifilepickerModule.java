@@ -18,7 +18,6 @@ import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
-import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiBlob;
 import org.appcelerator.titanium.util.TiActivityResultHandler;
@@ -37,6 +36,9 @@ public class TifilepickerModule extends KrollModule {
 
 	// Standard Debugging variables
 	private static final String LCAT = "TiFilePicker 📲 📲";
+	public static final int TYPE_FILE = 0;
+	public static final int TYPE_BLOB = 1;
+	private int resultType = TYPE_FILE;
 	private static final int RC = 42;
 	private String[] mimeTypes = { "*/*" };
 	private KrollFunction successCallback;
@@ -65,6 +67,9 @@ public class TifilepickerModule extends KrollModule {
 			if (cb instanceof KrollFunction) {
 				successCallback = (KrollFunction) cb;
 			}
+		}
+		if (opts.containsKeyAndNotNull("resultType")) {
+			resultType = opts.getInt("resultType");
 		}
 	}
 
@@ -112,16 +117,20 @@ public class TifilepickerModule extends KrollModule {
 										.getContentResolver()
 										.openInputStream(uri);
 								byte[] bytes;
+								KrollDict dict = new KrollDict();
 								try {
-									bytes = IOUtils.toByteArray(inStream);
-									TiBlob tiBlob = TiBlob.blobFromData(bytes,
-											mime.getExtensionFromMimeType(cR
-													.getType(uri)));
-									KrollDict dict = new KrollDict();
-									File file = StreamUtil
-											.stream2file(inStream);
-									dict.put("blob", tiBlob);
-									dict.put("file", file);
+									if (resultType == TYPE_BLOB) {
+										bytes = IOUtils.toByteArray(inStream);
+										TiBlob tiBlob = TiBlob.blobFromData(
+												bytes,
+												mime.getExtensionFromMimeType(cR
+														.getType(uri)));
+										dict.put("blob", tiBlob);
+									} else {
+										File file = StreamUtil
+												.stream2file(inStream);
+										dict.put("file", file);
+									}
 
 									successCallback
 											.call(getKrollObject(), dict);
