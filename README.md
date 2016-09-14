@@ -12,7 +12,7 @@ FilePicker.getFileSelectDialog({
   mimeTypes: ["*/pdf"],
   resultType : FilePicker.TYPE_FILE, 
   onSuccess : function(_e) {
-    var resultBlob = _e.file
+    var resultFile = _e.file;
   }  
 });
 
