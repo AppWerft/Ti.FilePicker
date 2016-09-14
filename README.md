@@ -9,14 +9,24 @@ This module written by Jorge <img src="https://avatars.slack-edge.com/2016-07-26
 ```javascript
 var FilePicker = require("ti.filepicker");
 FilePicker.getFileSelectDialog({
-  mimeTypes: ["*/pdf","*/magicstuff"],
-  resultType : FilePicker.TYPE_FILE,  || TYPE_BLOB
+  mimeTypes: ["*/pdf"],
+  resultType : FilePicker.TYPE_FILE, 
   onSuccess : function(_e) {
-        var resultBlob = _e.result;
-  }
-  
-})
+    var resultBlob = _e.file
+  }  
+});
 
+```
+Or:
+```javascript
+var FilePicker = require("ti.filepicker");
+FilePicker.getFileSelectDialog({
+    mimeTypes: ["*/pdf"],
+    resultType : FilePicker.TYPE_BLOB
+    onSuccess : function(_e) {
+        var resultBlob = _e.blob;
+    }
+});
 ```
 
 <img src="http://i.imgur.com/rvY4vrr.png" width=300 />
