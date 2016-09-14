@@ -51,6 +51,16 @@ public class TifilepickerModule extends KrollModule {
 	}
 
 	@Kroll.method
+	public void browseFiles(KrollDict opts) {
+		getAllFiles(opts);
+	}
+
+	@Kroll.method
+	public void showAllFiles(KrollDict opts) {
+		getAllFiles(opts);
+	}
+
+	@Kroll.method
 	public void getAllFiles(KrollDict opts) {
 		readOptions(opts);
 		Intent intent = new Intent();
