@@ -15,12 +15,14 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiApplication;
 
+import android.content.Intent;
+
 @Kroll.module(name = "Tifilepicker", id = "ti.filepicker")
 public class TifilepickerModule extends KrollModule {
 
 	// Standard Debugging variables
 	private static final String LCAT = "TiFilePicker 📲 📲";
-	private String[] mimeTypes;
+	private String[] mimeTypes = { "*/*" };
 	private KrollFunction successCallback;
 
 	// You can define constants with @Kroll.constant, for example:
@@ -34,11 +36,28 @@ public class TifilepickerModule extends KrollModule {
 	public static void onAppCreate(TiApplication app) {
 	}
 
-	@Kroll.method
-	public void getAllFiles(KrollDict opts) {
+	private void readOptions(KrollDict opts) {
 		Object cb;
+		// importing of mime stuff:
 		if (opts.containsKeyAndNotNull("mimeTypes")) {
 			mimeTypes = opts.getStringArray("mimeTypes");
 		}
+		if (opts.containsKeyAndNotNull("onSuccess")) {
+			cb = opts.get("onSuccess");
+			if (cb instanceof KrollFunction) {
+				successCallback = (KrollFunction) cb;
+			}
+		}
+	}
+
+	@Kroll.method
+	public void getAllFiles(KrollDict opts) {
+		readOptions(opts);
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_GET_CONTENT);
+		for (String mimeType : mimeTypes) {
+			intent.setType(mimeType);
+		}
+
 	}
 }
