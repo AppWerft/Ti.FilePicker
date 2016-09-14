@@ -11,9 +11,7 @@ var FilePicker = require("ti.filepicker");
 FilePicker.showAllFiles({
   mimeTypes: ["*/pdf","*/magicstuff"],
   onSuccess : function(_e) {
-      _e.list.foreach(function(uri){
-         FilePicker.getFile(uri);
-      })
+        var resultBlob = _e.result;
   }
   
 })

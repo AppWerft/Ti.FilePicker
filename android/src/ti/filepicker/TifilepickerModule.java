@@ -8,18 +8,28 @@
  */
 package ti.filepicker;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
+import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiApplication;
+import org.appcelerator.titanium.TiBlob;
 import org.appcelerator.titanium.util.TiActivityResultHandler;
 import org.appcelerator.titanium.util.TiActivitySupport;
+import org.apache.commons.io.IOUtils;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.webkit.MimeTypeMap;
 
 @Kroll.module(name = "Tifilepicker", id = "ti.filepicker")
 public class TifilepickerModule extends KrollModule {
@@ -29,6 +39,7 @@ public class TifilepickerModule extends KrollModule {
 	private static final int RC = 42;
 	private String[] mimeTypes = { "*/*" };
 	private KrollFunction successCallback;
+	private static Context ctx;
 
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;
@@ -39,6 +50,7 @@ public class TifilepickerModule extends KrollModule {
 
 	@Kroll.onAppCreate
 	public static void onAppCreate(TiApplication app) {
+		ctx = TiApplication.getInstance().getApplicationContext();
 	}
 
 	private void readOptions(KrollDict opts) {
@@ -56,7 +68,7 @@ public class TifilepickerModule extends KrollModule {
 	}
 
 	@Kroll.method
-	public void browseFiles(KrollDict opts) {
+	public void pick(KrollDict opts) {
 		getAllFiles(opts);
 	}
 
@@ -70,12 +82,13 @@ public class TifilepickerModule extends KrollModule {
 		readOptions(opts);
 		Intent intent = new Intent();
 		intent.setAction(Intent.ACTION_GET_CONTENT);
+		// iterating thrue all mimetypes:
 		for (String mimeType : mimeTypes) {
 			intent.setType(mimeType);
 		}
-		Context ctx = TiApplication.getInstance().getApplicationContext();
 		TiActivitySupport activitySupport = (TiActivitySupport) TiApplication
 				.getInstance().getCurrentActivity();
+		// this is the trick:
 		activitySupport.launchActivityForResult(intent, RC,
 				new TiActivityResultHandler() {
 					public void onError(Activity arg0, int arg1, Exception arg2) {
@@ -84,8 +97,38 @@ public class TifilepickerModule extends KrollModule {
 
 					public void onResult(Activity dummy, int requestCode,
 							int resultCode, Intent data) {
-						if (requestCode != RC)
-							return;
+						if (requestCode == RC) {
+							Uri uri = data.getData();
+							// write to console
+							Log.d(LCAT, uri.toString());
+
+							try {
+								ContentResolver cR = ctx.getContentResolver();
+								MimeTypeMap mime = MimeTypeMap.getSingleton();
+
+								InputStream inStream = TiApplication
+										.getInstance().getApplicationContext()
+										.getContentResolver()
+										.openInputStream(uri);
+								byte[] bytes;
+								try {
+									bytes = IOUtils.toByteArray(inStream);
+									TiBlob tiBlob = TiBlob.blobFromData(bytes,
+											mime.getExtensionFromMimeType(cR
+													.getType(uri)));
+									KrollDict dict = new KrollDict();
+									dict.put("result", tiBlob);
+									successCallback
+											.call(getKrollObject(), dict);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								// static dont need instance
+
+							} catch (FileNotFoundException e) {
+								e.printStackTrace();
+							}
+						}
 					}
 				}
 
