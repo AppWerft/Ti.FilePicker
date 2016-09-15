@@ -35,13 +35,15 @@ import android.webkit.MimeTypeMap;
 
 @Kroll.module(name = "Tifilepicker", id = "ti.filepicker")
 public class TifilepickerModule extends KrollModule {
-
-	// Standard Debugging variables
-	private static final String LCAT = "TiFilePicker 📲 📲";
+	@Kroll.constant
 	public static final int TYPE_FILE = 0;
+	@Kroll.constant
 	public static final int TYPE_BLOB = 1;
-	public static final int EXTERNAL_STORAGE = 1;
-	public static final int TEMP_STORAGE = 0;
+	@Kroll.constant
+	public static final int EXTERNAL_STORAGE = 11;
+	@Kroll.constant
+	public static final int TEMP_STORAGE = 12;
+	private static final String LCAT = "TiFilePicker 📲 📲";
 	private static int destinationStorage = TEMP_STORAGE;
 	private int resultType = TYPE_FILE;
 	private static final int RC = 42;
@@ -84,7 +86,7 @@ public class TifilepickerModule extends KrollModule {
 		if (opts.containsKeyAndNotNull("resultType")) {
 			resultType = opts.getInt("resultType");
 		}
-		if (opts.containsKey("destinationStorage")) {
+		if (opts.containsKeyAndNotNull("destinationStorage")) {
 			destinationStorage = opts.getInt("destinationStorage");
 			Log.d(LCAT, "destinationStorage=" + destinationStorage);
 		}
