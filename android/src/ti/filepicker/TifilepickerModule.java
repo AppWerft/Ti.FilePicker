@@ -11,8 +11,8 @@ package ti.filepicker;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.File;
 
+import org.apache.commons.io.IOUtils;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
@@ -20,10 +20,11 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiBlob;
-import org.appcelerator.titanium.io.TiFile;
+import org.appcelerator.titanium.TiFileProxy;
+import org.appcelerator.titanium.io.TiBaseFile;
+import org.appcelerator.titanium.io.TiFileFactory;
 import org.appcelerator.titanium.util.TiActivityResultHandler;
 import org.appcelerator.titanium.util.TiActivitySupport;
-import org.apache.commons.io.IOUtils;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -48,6 +49,7 @@ public class TifilepickerModule extends KrollModule {
 	private KrollFunction successCallback;
 	private KrollFunction errorCallback;
 	private static Context ctx;
+	protected TiBaseFile tbf;
 
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;
@@ -141,13 +143,16 @@ public class TifilepickerModule extends KrollModule {
 												.stream2file(inStream,
 														destination);
 										if (fullPath != null) {
-											dict.put("file", "file://"
-													+ fullPath);
+											tbf = TiFileFactory
+													.createTitaniumFile(
+															new String[] { fullPath },
+															false);
+											dict.put("file", new TiFileProxy(
+													tbf));
 											successCallback.call(
 													getKrollObject(), dict);
 										} else
 											throwError();
-
 									}
 								} catch (IOException e) {
 									e.printStackTrace();
@@ -155,7 +160,7 @@ public class TifilepickerModule extends KrollModule {
 								}
 							} catch (FileNotFoundException e) {
 								e.printStackTrace();
-
+								throwError();
 							}
 						}
 					}
@@ -165,5 +170,7 @@ public class TifilepickerModule extends KrollModule {
 	private void throwError() {
 		if (errorCallback != null)
 			errorCallback.call(getKrollObject(), new KrollDict());
+		else
+			Log.e(LCAT, "no error callback found");
 	}
 }

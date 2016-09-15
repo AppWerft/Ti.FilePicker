@@ -16,6 +16,7 @@ import java.util.UUID;
 public class StreamUtil {
 	public static final String PREFIX = "stream2file";
 	public static final String SUFFIX = ".tmp";
+	private static final String LCAT = "TiFilePicker 📲 📲";
 
 	public static String stream2file(InputStream inputStream, int destination) {
 		String uuid = UUID.randomUUID().toString();
@@ -34,6 +35,7 @@ public class StreamUtil {
 				e.printStackTrace();
 			}
 		}
+		Log.d(LCAT, fullPath);
 		try {
 			OutputStream stream = new BufferedOutputStream(
 					new FileOutputStream(fullPath));
