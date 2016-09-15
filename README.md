@@ -11,12 +11,16 @@ var FilePicker = require("ti.filepicker");
 FilePicker.getFileSelectDialog({
   mimeTypes: ["*/pdf"],
   resultType : FilePicker.TYPE_FILE, 
+  destination : FilePicker.DESTINATION_TEMP, // or DESTINATION_EXTERNAL
   onSuccess : function(_e) {
     var resultFile = _e.file;
   }  
 });
 
 ```
+In case of file result you can choose the destination with property *destination*
+In case of DESTINATION_EXTERNAL don't forget to remove later …
+
 Or:
 ```javascript
 var FilePicker = require("ti.filepicker");
@@ -28,6 +32,9 @@ FilePicker.getFileSelectDialog({
     }
 });
 ```
+
+
+
 
 <img src="http://i.imgur.com/rvY4vrr.png" width=300 />
 <img src="http://i.imgur.com/ShCq3NW.png" width=300 />

@@ -11,8 +11,8 @@ package ti.filepicker;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.io.File;
+
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
@@ -20,6 +20,7 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiBlob;
+import org.appcelerator.titanium.io.TiFile;
 import org.appcelerator.titanium.util.TiActivityResultHandler;
 import org.appcelerator.titanium.util.TiActivitySupport;
 import org.apache.commons.io.IOUtils;
@@ -38,10 +39,14 @@ public class TifilepickerModule extends KrollModule {
 	private static final String LCAT = "TiFilePicker 📲 📲";
 	public static final int TYPE_FILE = 0;
 	public static final int TYPE_BLOB = 1;
+	public static final int DESTINATION_EXTERNAL = 0;
+	public static final int DESTINATION_TEMP = 1;
+	private static int destination = DESTINATION_TEMP;
 	private int resultType = TYPE_FILE;
 	private static final int RC = 42;
 	private String[] mimeTypes = { "*/*" };
 	private KrollFunction successCallback;
+	private KrollFunction errorCallback;
 	private static Context ctx;
 
 	// You can define constants with @Kroll.constant, for example:
@@ -68,23 +73,27 @@ public class TifilepickerModule extends KrollModule {
 				successCallback = (KrollFunction) cb;
 			}
 		}
+		if (opts.containsKeyAndNotNull("onError")) {
+			cb = opts.get("onError");
+			if (cb instanceof KrollFunction) {
+				errorCallback = (KrollFunction) cb;
+			}
+		}
 		if (opts.containsKeyAndNotNull("resultType")) {
 			resultType = opts.getInt("resultType");
+		}
+		if (opts.containsKeyAndNotNull("destination")) {
+			destination = opts.getInt("destination");
 		}
 	}
 
 	@Kroll.method
-	public void pick(KrollDict opts) {
-		getAllFiles(opts);
+	public void createFileSelectDialog(KrollDict opts) {
+		getFileSelectDialog(opts);
 	}
 
 	@Kroll.method
 	public void getFileSelectDialog(KrollDict opts) {
-		getAllFiles(opts);
-	}
-
-	@Kroll.method
-	public void getAllFiles(KrollDict opts) {
 		readOptions(opts);
 		Intent intent = new Intent();
 		intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -98,7 +107,7 @@ public class TifilepickerModule extends KrollModule {
 		activitySupport.launchActivityForResult(intent, RC,
 				new TiActivityResultHandler() {
 					public void onError(Activity arg0, int arg1, Exception arg2) {
-
+						throwError();
 					}
 
 					public void onResult(Activity dummy, int requestCode,
@@ -107,11 +116,9 @@ public class TifilepickerModule extends KrollModule {
 							Uri uri = data.getData();
 							// write to console
 							Log.d(LCAT, uri.toString());
-
 							try {
 								ContentResolver cR = ctx.getContentResolver();
 								MimeTypeMap mime = MimeTypeMap.getSingleton();
-
 								InputStream inStream = TiApplication
 										.getInstance().getApplicationContext()
 										.getContentResolver()
@@ -127,25 +134,36 @@ public class TifilepickerModule extends KrollModule {
 														bytes,
 														mime.getExtensionFromMimeType(cR
 																.getType(uri))));
+										successCallback.call(getKrollObject(),
+												dict);
 									} else {
-										dict.put("file", StreamUtil
-												.stream2file(inStream));
+										String fullPath = StreamUtil
+												.stream2file(inStream,
+														destination);
+										if (fullPath != null) {
+											dict.put("file", "file://"
+													+ fullPath);
+											successCallback.call(
+													getKrollObject(), dict);
+										} else
+											throwError();
+
 									}
-									successCallback
-											.call(getKrollObject(), dict);
 								} catch (IOException e) {
 									e.printStackTrace();
+									throwError();
 								}
-								// static dont need instance
-
 							} catch (FileNotFoundException e) {
 								e.printStackTrace();
+
 							}
 						}
 					}
-				}
+				});
+	}
 
-		);
-
+	private void throwError() {
+		if (errorCallback != null)
+			errorCallback.call(getKrollObject(), new KrollDict());
 	}
 }
