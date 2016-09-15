@@ -22,9 +22,15 @@ public class StreamUtil {
 		String uuid = UUID.randomUUID().toString();
 		String fullPath = null;
 		Boolean result = false;
-		if (destination == TifilepickerModule.DESTINATION_EXTERNAL
-				&& StorageHelper.isExternalStorageReadable()
-				&& StorageHelper.isExternalStorageWritable()) {
+		boolean isReadable = StorageHelper.isExternalStorageReadable();
+		boolean isWritable = StorageHelper.isExternalStorageWritable();
+
+		Log.d(LCAT, "destination " + destination);
+		Log.d(LCAT, "isExternalStorageReadable " + isReadable);
+		Log.d(LCAT, "isExternalStorageWritable " + isWritable);
+
+		if (destination == TifilepickerModule.EXTERNAL_STORAGE && isReadable
+				&& isWritable) {
 			fullPath = Environment.getExternalStorageDirectory()
 					.getAbsolutePath() + "/" + uuid;
 		} else {

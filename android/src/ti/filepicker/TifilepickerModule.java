@@ -40,16 +40,16 @@ public class TifilepickerModule extends KrollModule {
 	private static final String LCAT = "TiFilePicker 📲 📲";
 	public static final int TYPE_FILE = 0;
 	public static final int TYPE_BLOB = 1;
-	public static final int DESTINATION_EXTERNAL = 0;
-	public static final int DESTINATION_TEMP = 1;
-	private static int destination = DESTINATION_TEMP;
+	public static final int EXTERNAL_STORAGE = 1;
+	public static final int TEMP_STORAGE = 0;
+	private static int destinationStorage = TEMP_STORAGE;
 	private int resultType = TYPE_FILE;
 	private static final int RC = 42;
 	private String[] mimeTypes = { "*/*" };
 	private KrollFunction successCallback;
 	private KrollFunction errorCallback;
 	private static Context ctx;
-	protected TiBaseFile tbf;
+	protected TiBaseFile tiBaseFile;
 
 	// You can define constants with @Kroll.constant, for example:
 	// @Kroll.constant public static final String EXTERNAL_NAME = value;
@@ -84,8 +84,8 @@ public class TifilepickerModule extends KrollModule {
 		if (opts.containsKeyAndNotNull("resultType")) {
 			resultType = opts.getInt("resultType");
 		}
-		if (opts.containsKeyAndNotNull("destination")) {
-			destination = opts.getInt("destination");
+		if (opts.containsKeyAndNotNull("destinationStorage")) {
+			destinationStorage = opts.getInt("destinationStorage");
 		}
 	}
 
@@ -141,14 +141,14 @@ public class TifilepickerModule extends KrollModule {
 									} else {
 										String fullPath = StreamUtil
 												.stream2file(inStream,
-														destination);
+														destinationStorage);
 										if (fullPath != null) {
-											tbf = TiFileFactory
+											tiBaseFile = TiFileFactory
 													.createTitaniumFile(
 															new String[] { fullPath },
 															false);
 											dict.put("file", new TiFileProxy(
-													tbf));
+													tiBaseFile));
 											successCallback.call(
 													getKrollObject(), dict);
 										} else
