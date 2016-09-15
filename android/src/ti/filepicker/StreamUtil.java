@@ -18,19 +18,20 @@ public class StreamUtil {
 	public static final String SUFFIX = ".tmp";
 	private static final String LCAT = "TiFilePicker 📲 📲";
 
-	public static String stream2file(InputStream inputStream, int destination) {
+	public static String stream2file(InputStream inputStream,
+			int destinationStorage) {
 		String uuid = UUID.randomUUID().toString();
 		String fullPath = null;
 		Boolean result = false;
 		boolean isReadable = StorageHelper.isExternalStorageReadable();
 		boolean isWritable = StorageHelper.isExternalStorageWritable();
 
-		Log.d(LCAT, "destination " + destination);
+		Log.d(LCAT, "destinationStorage " + destinationStorage);
 		Log.d(LCAT, "isExternalStorageReadable " + isReadable);
 		Log.d(LCAT, "isExternalStorageWritable " + isWritable);
 
-		if (destination == TifilepickerModule.EXTERNAL_STORAGE && isReadable
-				&& isWritable) {
+		if (destinationStorage == TifilepickerModule.EXTERNAL_STORAGE
+				&& isReadable && isWritable) {
 			fullPath = Environment.getExternalStorageDirectory()
 					.getAbsolutePath() + "/" + uuid;
 		} else {

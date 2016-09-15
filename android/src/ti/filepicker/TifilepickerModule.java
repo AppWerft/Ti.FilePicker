@@ -84,8 +84,9 @@ public class TifilepickerModule extends KrollModule {
 		if (opts.containsKeyAndNotNull("resultType")) {
 			resultType = opts.getInt("resultType");
 		}
-		if (opts.containsKeyAndNotNull("destinationStorage")) {
+		if (opts.containsKey("destinationStorage")) {
 			destinationStorage = opts.getInt("destinationStorage");
+			Log.d(LCAT, "destinationStorage=" + destinationStorage);
 		}
 	}
 
