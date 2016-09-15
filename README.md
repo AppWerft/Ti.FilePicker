@@ -19,7 +19,10 @@ FilePicker.getFileSelectDialog({
 
 ```
 In case of file result you can choose the destination with property *destination*
-In case of DESTINATION_EXTERNAL don't forget to remove later …
+In case of DESTINATION_EXTERNAL don't forget to remove later …  For usage of external storage on devices ≥ Marshmellow you need
+
+1. entry in manifest
+2. run time permissions
 
 Or:
 ```javascript

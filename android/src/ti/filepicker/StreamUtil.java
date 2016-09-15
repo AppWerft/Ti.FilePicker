@@ -19,9 +19,11 @@ public class StreamUtil {
 
 	public static String stream2file(InputStream inputStream, int destination) {
 		String uuid = UUID.randomUUID().toString();
-		String fullPath = "";
+		String fullPath = null;
 		Boolean result = false;
-		if (destination == TifilepickerModule.DESTINATION_EXTERNAL) {
+		if (destination == TifilepickerModule.DESTINATION_EXTERNAL
+				&& StorageHelper.isExternalStorageReadable()
+				&& StorageHelper.isExternalStorageWritable()) {
 			fullPath = Environment.getExternalStorageDirectory()
 					.getAbsolutePath() + "/" + uuid;
 		} else {
