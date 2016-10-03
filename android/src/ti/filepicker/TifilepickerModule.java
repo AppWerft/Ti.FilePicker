@@ -47,9 +47,10 @@ public class TifilepickerModule extends KrollModule {
 	private static int destinationStorage = TEMP_STORAGE;
 	private int resultType = TYPE_FILE;
 	private static final int RC = 42;
+	private String suffix;
 	private String[] mimeTypes = { "*/*" };
-	private KrollFunction successCallback;
-	private KrollFunction errorCallback;
+	private KrollFunction successCB;
+	private KrollFunction errorCB;
 	private static Context ctx;
 	protected TiBaseFile tiBaseFile;
 
@@ -71,16 +72,19 @@ public class TifilepickerModule extends KrollModule {
 		if (opts.containsKeyAndNotNull("mimeTypes")) {
 			mimeTypes = opts.getStringArray("mimeTypes");
 		}
+		if (opts.containsKeyAndNotNull("suffix")) {
+			suffix = opts.getString("suffix");
+		}
 		if (opts.containsKeyAndNotNull("onSuccess")) {
 			cb = opts.get("onSuccess");
 			if (cb instanceof KrollFunction) {
-				successCallback = (KrollFunction) cb;
+				successCB = (KrollFunction) cb;
 			}
 		}
 		if (opts.containsKeyAndNotNull("onError")) {
 			cb = opts.get("onError");
 			if (cb instanceof KrollFunction) {
-				errorCallback = (KrollFunction) cb;
+				errorCB = (KrollFunction) cb;
 			}
 		}
 		if (opts.containsKeyAndNotNull("resultType")) {
@@ -119,8 +123,6 @@ public class TifilepickerModule extends KrollModule {
 							int resultCode, Intent data) {
 						if (requestCode == RC) {
 							Uri uri = data.getData();
-							// write to console
-							Log.d(LCAT, uri.toString());
 							try {
 								ContentResolver cR = ctx.getContentResolver();
 								MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -139,12 +141,12 @@ public class TifilepickerModule extends KrollModule {
 														bytes,
 														mime.getExtensionFromMimeType(cR
 																.getType(uri))));
-										successCallback.call(getKrollObject(),
-												dict);
+										successCB.call(getKrollObject(), dict);
 									} else {
 										String fullPath = StreamUtil
 												.stream2file(inStream,
-														destinationStorage);
+														destinationStorage,
+														suffix);
 										if (fullPath != null) {
 											tiBaseFile = TiFileFactory
 													.createTitaniumFile(
@@ -152,8 +154,8 @@ public class TifilepickerModule extends KrollModule {
 															false);
 											dict.put("file", new TiFileProxy(
 													tiBaseFile));
-											successCallback.call(
-													getKrollObject(), dict);
+											successCB.call(getKrollObject(),
+													dict);
 										} else
 											throwError();
 									}
@@ -170,9 +172,13 @@ public class TifilepickerModule extends KrollModule {
 				});
 	}
 
-	private void throwError() {
-		if (errorCallback != null)
-			errorCallback.call(getKrollObject(), new KrollDict());
+	public void throwError() {
+		throwError(new KrollDict());
+	}
+
+	public void throwError(KrollDict dict) {
+		if (errorCB != null)
+			errorCB.call(getKrollObject(), dict);
 		else
 			Log.e(LCAT, "no error callback found");
 	}

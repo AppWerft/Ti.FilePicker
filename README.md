@@ -10,6 +10,7 @@ This module written by Jorge <img src="https://avatars.slack-edge.com/2016-07-26
 var FilePicker = require("ti.filepicker");
 FilePicker.getFileSelectDialog({
   mimeTypes: ["*/pdf"],
+  suffix : ".pdf", 
   resultType : FilePicker.TYPE_FILE, 
   destinationStorage : FilePicker.TEMP_STORAGE, // or EXTERNAL_STORAGE
   onSuccess : function(_e) {
@@ -29,6 +30,7 @@ Or:
 var FilePicker = require("ti.filepicker");
 FilePicker.getFileSelectDialog({
     mimeTypes: ["*/pdf"],
+      
     resultType : FilePicker.TYPE_BLOB
     onSuccess : function(_e) {
         var resultBlob = _e.blob;

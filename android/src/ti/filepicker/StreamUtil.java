@@ -19,30 +19,24 @@ public class StreamUtil {
 	private static final String LCAT = "TiFilePicker 📲 📲";
 
 	public static String stream2file(InputStream inputStream,
-			int destinationStorage) {
+			int destinationStorage, String suffix) {
 		String uuid = UUID.randomUUID().toString();
 		String fullPath = null;
 		Boolean result = false;
 		boolean isReadable = StorageHelper.isExternalStorageReadable();
 		boolean isWritable = StorageHelper.isExternalStorageWritable();
-
-		Log.d(LCAT, "destinationStorage " + destinationStorage);
-		Log.d(LCAT, "isExternalStorageReadable " + isReadable);
-		Log.d(LCAT, "isExternalStorageWritable " + isWritable);
-
 		if (destinationStorage == TifilepickerModule.EXTERNAL_STORAGE
 				&& isReadable && isWritable) {
 			fullPath = Environment.getExternalStorageDirectory()
-					.getAbsolutePath() + "/" + uuid;
+					.getAbsolutePath() + "/" + uuid + suffix;
 		} else {
 			try {
-				File tempFile = File.createTempFile(PREFIX, SUFFIX);
+				File tempFile = File.createTempFile(PREFIX, suffix);
 				fullPath = tempFile.getAbsolutePath();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		Log.d(LCAT, fullPath);
 		try {
 			OutputStream stream = new BufferedOutputStream(
 					new FileOutputStream(fullPath));
@@ -57,7 +51,7 @@ public class StreamUtil {
 				result = true;
 			}
 		} catch (Exception e) {
-			Log.e("saveToExternalStorage()", e.getMessage());
+			Log.e(LCAT, e.getMessage());
 			return null;
 		}
 		if (result) {
