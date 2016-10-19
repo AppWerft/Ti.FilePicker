@@ -117,10 +117,13 @@ public class TifilepickerModule extends KrollModule {
 				new TiActivityResultHandler() {
 					public void onError(Activity arg0, int arg1, Exception arg2) {
 						throwError();
+						return;
 					}
 
 					public void onResult(Activity dummy, int requestCode,
 							int resultCode, Intent data) {
+						if (data == null)
+							return;
 						if (requestCode == RC) {
 							Uri uri = data.getData();
 							try {
