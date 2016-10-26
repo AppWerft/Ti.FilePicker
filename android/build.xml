@@ -1,4 +1,4 @@
-<project name="tifilepicker" default="dist">
+<project name="filepicker" default="dist">
 	<description>
 		Ant build script for Titanium Android module tifilepicker
 	</description>

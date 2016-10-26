@@ -5,13 +5,13 @@
 version: 1.0.2
 apiversion: 2
 architectures: armeabi armeabi-v7a x86
-description: tifilepicker
-author: x
+description: Filepicker
+author: Jormagar
 license: Specify your license
 copyright: Copyright (c) 2016 by 
 
 # these should not be edited
-name: tifilepicker
+name: filepicker
 moduleid: ti.filepicker
 guid: 00e35cc2-015c-4d3d-b6cc-5ecb4c70b531
 platform: android
