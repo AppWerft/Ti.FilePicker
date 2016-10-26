@@ -25,7 +25,7 @@ public class StreamUtil {
 		Boolean result = false;
 		boolean isReadable = StorageHelper.isExternalStorageReadable();
 		boolean isWritable = StorageHelper.isExternalStorageWritable();
-		if (destinationStorage == TifilepickerModule.EXTERNAL_STORAGE
+		if (destinationStorage == FilepickerModule.EXTERNAL_STORAGE
 				&& isReadable && isWritable) {
 			fullPath = Environment.getExternalStorageDirectory()
 					.getAbsolutePath() + "/" + uuid + suffix;
