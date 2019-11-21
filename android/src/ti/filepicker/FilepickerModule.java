@@ -74,7 +74,7 @@ public class FilepickerModule extends KrollModule
 	private KrollFunction errorCallback;
 
 	protected TiBaseFile tiBaseFile;
-	
+
 	public FilepickerModule()
 	{
 		super();
@@ -430,6 +430,7 @@ public class FilepickerModule extends KrollModule
 			while ((len = inputStream.read(buffer)) != -1) {
 				outputStream.write(buffer, 0, len);
 			}
+			outputStream.close();
 		} catch (IOException e) {
 			throw new Exception();
 		}
@@ -518,7 +519,5 @@ public class FilepickerModule extends KrollModule
 	private KrollFunction getErrorCallback(){
 		return this.errorCallback;
 	}
-	
+
 }
-
-
